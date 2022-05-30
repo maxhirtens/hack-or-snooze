@@ -50,3 +50,16 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
+// get info from story submit form and append to page
+async function createStoryfromSubmit(e)  {
+  e.preventDefault();
+  console.debug("createStoryfromSubmit");
+  const authorInput = $('#author').val();
+  const titleInput = $('#title').val();
+  const urlInput = $('#url').val();
+  await storyList.addStory(currentUser,
+  {title: titleInput, author: authorInput, url: urlInput});
+}
+
+$submitForm.on('submit', createStoryfromSubmit)

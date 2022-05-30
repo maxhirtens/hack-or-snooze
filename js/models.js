@@ -22,10 +22,10 @@ class Story {
   }
 
   /** Parses hostname out of URL and returns it. */
-
   getHostName() {
-    // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    let domain = (new URL(this.url));
+    domain = domain.hostname;
+    return domain;
   }
 }
 
@@ -68,13 +68,29 @@ class StoryList {
 
   /** Adds story data to API, makes a Story instance, adds it to story list.
    * - user - the current instance of User who will post the story
-   * - obj of {title, author, url}
+   * - newStory - obj of {title, author, url}
    *
    * Returns the new Story instance
    */
 
-  async addStory( /* user, newStory */) {
-    // UNIMPLEMENTED: complete this function!
+  async addStory(user, {title, author, url}) {
+    const token = user.loginToken;
+    // const response = await axios.post(`${BASE_URL}/stories`, {
+    //   data: {
+    //     token,
+    //     story: {
+    //       title,
+    //       author,
+    //       url } }
+    //     });
+    const response = await axios({
+      method: "POST",
+      url: `${BASE_URL}/stories`,
+      data: { token, story: { title, author, url } },
+    });
+
+    const story = new Story(response.data.story);
+    return story;
   }
 }
 

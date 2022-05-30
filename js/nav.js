@@ -1,5 +1,6 @@
 "use strict";
-
+const $submitStory = $('#submit-story');
+const $submitForm = $('#submit-form');
 /******************************************************************************
  * Handling navbar clicks and updating navbar
  */
@@ -34,3 +35,11 @@ function updateNavOnLogin() {
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
+
+// show the story submit form
+function showSubmitForm() {
+console.debug('showSubmitForm');
+$submitForm.removeClass('hidden')
+}
+
+$submitStory.on('click', showSubmitForm)
