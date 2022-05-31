@@ -25,15 +25,24 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li id="${story.storyId}">
+      <span class="heart"><i class="fa-regular fa-heart"></i></span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
+        <span class="trash"><i class="fa fa-trash"></i></span>
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
 }
+// changes heart icon when favorited
+$allStoriesList.on('click', '.heart', function(evt){
+  console.log(evt.target);
+  let target = evt.target;
+  target.className = target.className === "fa-regular fa-heart" ? 'fa-solid fa-heart' : "fa-regular fa-heart";
+})
+// removes story when trash icon is clicked
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
@@ -58,8 +67,13 @@ async function createStoryfromSubmit(e)  {
   const authorInput = $('#author').val();
   const titleInput = $('#title').val();
   const urlInput = $('#url').val();
-  await storyList.addStory(currentUser,
-  {title: titleInput, author: authorInput, url: urlInput});
+  let newStory = await storyList.addStory(currentUser,
+    {title: titleInput, author: authorInput, url: urlInput});
+  let updateStory = generateStoryMarkup(newStory);
+  $allStoriesList.prepend(updateStory);
+  // idea from: https://stackoverflow.com/questions/3786694/how-to-reset-clear-form-through-javascript
+  $submitForm[0].reset();
+  $submitForm.addClass('hidden')
 }
 
 $submitForm.on('submit', createStoryfromSubmit)

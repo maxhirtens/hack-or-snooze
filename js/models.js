@@ -23,6 +23,7 @@ class Story {
 
   /** Parses hostname out of URL and returns it. */
   getHostName() {
+    // idea partially from https://stackoverflow.com/questions/736513/how-do-i-parse-a-url-into-hostname-and-path-in-javascript
     let domain = (new URL(this.url));
     domain = domain.hostname;
     return domain;
@@ -75,6 +76,7 @@ class StoryList {
 
   async addStory(user, {title, author, url}) {
     const token = user.loginToken;
+    // Could use help with why this doesn't work.
     // const response = await axios.post(`${BASE_URL}/stories`, {
     //   data: {
     //     token,
@@ -208,5 +210,16 @@ class User {
       console.error("loginViaStoredCredentials failed", err);
       return null;
     }
+  }
+
+  // add or remove story from favorites []
+    async addFavoriteStory(story) {
+    this.favorites.push(story);
+    await axios.post(`${BASE_URL}/users/${this.username}/favorites/${story[0].storyId}`, {token: this.loginToken});
+  }
+    async removeFavoriteStory(story) {
+    let updatedArray = this.favorites.filter(e => e !== story);
+    this.favorites = updatedArray;
+    await axios.delete(`${BASE_URL}/users/${this.username}/favorites/${story[0].storyId}`, { data: {token: this.loginToken}});
   }
 }

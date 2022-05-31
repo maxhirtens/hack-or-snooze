@@ -39,7 +39,7 @@ function updateNavOnLogin() {
 // show the story submit form
 function showSubmitForm() {
 console.debug('showSubmitForm');
-$submitForm.removeClass('hidden')
+$submitForm.toggleClass('hidden')
 }
 
 $submitStory.on('click', showSubmitForm)
