@@ -92,9 +92,12 @@ class StoryList {
     });
 
     const story = new Story(response.data.story);
+    currentUser.ownStories.push(story);
     return story;
   }
 }
+
+// build a removeStory feature
 
 
 /******************************************************************************
@@ -213,13 +216,12 @@ class User {
   }
 
   // add or remove story from favorites []
-    async addFavoriteStory(story) {
-    this.favorites.push(story);
-    await axios.post(`${BASE_URL}/users/${this.username}/favorites/${story[0].storyId}`, {token: this.loginToken});
+    async addFavoriteStory(storyId) {
+    this.favorites.push(storyId);
+    await axios.post(`${BASE_URL}/users/${this.username}/favorites/${storyId.storyId}`, {token: this.loginToken});
   }
-    async removeFavoriteStory(story) {
-    let updatedArray = this.favorites.filter(e => e !== story);
-    this.favorites = updatedArray;
-    await axios.delete(`${BASE_URL}/users/${this.username}/favorites/${story[0].storyId}`, { data: {token: this.loginToken}});
+   async removeFavoriteStory(storyId) {
+    this.favorites = this.favorites.filter(e => e.storyId !== storyId);
+    await axios.delete(`${BASE_URL}/users/${this.username}/favorites/${storyId.storyId}`, { data: {token: this.loginToken}});
   }
 }

@@ -1,6 +1,7 @@
 "use strict";
 const $submitStory = $('#submit-story');
 const $submitForm = $('#submit-form');
+const $favStories = $('#favorite-story');
 /******************************************************************************
  * Handling navbar clicks and updating navbar
  */
@@ -10,6 +11,7 @@ const $submitForm = $('#submit-form');
 function navAllStories(evt) {
   console.debug("navAllStories", evt);
   hidePageComponents();
+  $favoritedStories.addClass('hidden');
   putStoriesOnPage();
 }
 
@@ -43,3 +45,10 @@ $submitForm.toggleClass('hidden')
 }
 
 $submitStory.on('click', showSubmitForm)
+
+// hide page when favorites is clicked, show favorites array
+$favStories.on('click', function(){
+  console.debug('clicked favorites')
+  hidePageComponents();
+  putFavsonPage();
+})

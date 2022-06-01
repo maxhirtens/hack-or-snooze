@@ -2,7 +2,6 @@
 
 // This is the global list of the stories, an instance of StoryList
 let storyList;
-
 /** Get and show stories when site first loads. */
 
 async function getAndShowStoriesOnStart() {
@@ -29,7 +28,6 @@ function generateStoryMarkup(story) {
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
-        <span class="trash"><i class="fa fa-trash"></i></span>
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
         <small class="story-user">posted by ${story.username}</small>
@@ -37,11 +35,36 @@ function generateStoryMarkup(story) {
     `);
 }
 // changes heart icon when favorited
-$allStoriesList.on('click', '.heart', function(evt){
-  console.log(evt.target);
-  let target = evt.target;
-  target.className = target.className === "fa-regular fa-heart" ? 'fa-solid fa-heart' : "fa-regular fa-heart";
-})
+// $allStoriesList.on('click', '.heart', function(evt){
+//   console.log(evt.target);
+//   let target = evt.target;
+//   target.className = target.className === "fa-regular fa-heart" ? 'fa-solid fa-heart' : "fa-regular fa-heart";
+// })
+
+// above wasn't working with currentUser methods, needed help from http://hack-or-snooze.surge.sh/#
+
+function toggleStoryFavorite(evt) {
+  console.debug("toggleStoryFavorite");
+  const $tgt = $(evt.target);
+  const $closestLi = $tgt.closest("li");
+  const storyId = $closestLi.attr("id");
+  const story = storyList.stories.find(s => s.storyId === storyId);
+
+  // see if the item is already favorited (checking by presence of star)
+  if ($tgt.hasClass("fa-solid")) {
+    // currently a favorite: remove from user's fav list and change star
+    currentUser.removeFavoriteStory(story);
+    $tgt.closest("i").toggleClass("fa-solid fa-regular");
+  } else {
+    // currently not a favorite: do the opposite
+    currentUser.addFavoriteStory(story);
+    $tgt.closest("i").toggleClass("fa-solid fa-regular");
+  }
+}
+
+$allStoriesList.on("click", ".heart", toggleStoryFavorite);
+
+
 // removes story when trash icon is clicked
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
@@ -77,3 +100,18 @@ async function createStoryfromSubmit(e)  {
 }
 
 $submitForm.on('submit', createStoryfromSubmit)
+
+// display favorite stories
+function putFavsonPage() {
+  console.debug('generating fav stories...');
+  $favoritedStories.removeClass('hidden');
+  $favoritedStories.empty();
+  if(currentUser.favorites.length === 0){
+    $favoritedStories.append('wow, such empty');
+  } else {
+  for (let story of currentUser.favorites) {
+    const $story = generateStoryMarkup(story);
+    $favoritedStories.append($story);
+  }
+  }
+}
