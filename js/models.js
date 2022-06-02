@@ -95,9 +95,20 @@ class StoryList {
     currentUser.ownStories.push(story);
     return story;
   }
+  // build a deleteStory feature
+static async deleteStory(storyId){
+  const token = currentUser.loginToken;
+  storyList.stories = storyList.stories.filter(s => s.storyId !== storyId);
+  await axios.delete(`${BASE_URL}/stories/${storyId}`, { data: {token}});
 }
 
-// build a removeStory feature
+// async removeFavoriteStory(storyId) {
+//   this.favorites = this.favorites.filter(e => e.storyId !== storyId);
+//   await axios.delete(`${BASE_URL}/users/${this.username}/favorites/${storyId.storyId}`, { data: {token: this.loginToken}});
+// }
+}
+
+
 
 
 /******************************************************************************
@@ -224,4 +235,8 @@ class User {
     this.favorites = this.favorites.filter(e => e.storyId !== storyId);
     await axios.delete(`${BASE_URL}/users/${this.username}/favorites/${storyId.storyId}`, { data: {token: this.loginToken}});
   }
+
+// need to keep track of favorite stories to keep heart icon correct
+
+
 }

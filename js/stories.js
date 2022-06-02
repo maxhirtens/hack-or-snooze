@@ -28,6 +28,9 @@ function generateStoryMarkup(story) {
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
+        <span class="trash">
+        <i class="fas fa-trash-alt"></i>
+        </span>
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
         <small class="story-user">posted by ${story.username}</small>
@@ -115,3 +118,22 @@ function putFavsonPage() {
   }
   }
 }
+
+async function sendForDelete(storyId)  {
+  await StoryList.deleteStory(storyId);
+}
+
+// check for story ownership then delete it
+$allStoriesList.on('click', '.trash', function(evt){
+  console.log(evt.target.closest('li').id)
+  const targetStoryId = evt.target.closest('li').id;
+  if(currentUser.ownStories.some(s => s.storyId === targetStoryId)){
+    sendForDelete(targetStoryId);
+    putStoriesOnPage();
+  } else {
+    // alert('not your story!');
+    let msg = 'not your story!';
+    evt.target.closest('.trash').append(msg)
+    setTimeout(() => evt.target.closest('.trash').remove(), 2000)
+  }
+})
